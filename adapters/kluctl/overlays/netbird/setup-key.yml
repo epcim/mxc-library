@@ -1,0 +1,6 @@
+{% if get_var('overlays.netbird.setup_key', none) %}
+{% set defaults = load_template('../../../../schema/netbird.io/nbsetupkey.defaults.yml') | from_yaml %}
+{% set cr = merge_dict(defaults, overlays.netbird.setup_key) %}
+---
+{{ cr | to_yaml }}
+{% endif %}

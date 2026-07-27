@@ -1,0 +1,6 @@
+{% for item in get_var('overlays.networkPolicies', []) %}
+  {%- if policy_namespace is not defined or item.metadata.namespace == policy_namespace %}
+---
+{{ item | to_yaml }}
+  {%- endif %}
+{% endfor %}

@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Model-X Configuration (MXC) Library - Standard production-ready workload compositions and adapters for the MXC GitOps ecosystem.">
+    <title>MXC Workload Library | Reusable Declarative Compositions</title>
+    <!-- Modern Premium Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Premium Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --bg-color: #060a13;
+            --surface-color: rgba(13, 22, 37, 0.7);
+            --surface-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --primary-gradient: linear-gradient(135deg, #059669, #0d9488);
+            --primary-color: #059669;
+            --accent-indigo: #6366f1;
+            --accent-sunset: #f97316;
+            --accent-rust: #ef4444;
+            --glow-shadow: 0 0 30px rgba(5, 150, 105, 0.15);
+            --font-main: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Abstract glowing background blobs */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(5, 150, 105, 0.08) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: 10%;
+            right: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.06) 0%, rgba(0,0,0,0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Container Limits */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        /* Navigation Header */
+        header {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--surface-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(6, 10, 19, 0.8);
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-symbol {
+            width: 2.25rem;
+            height: 2.25rem;
+            background: var(--primary-gradient);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-github {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--surface-border);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-github:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0 4rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            color: #34d399;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #9ca3af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 span {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+            transition: var(--transition-smooth);
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.5), var(--glow-shadow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--surface-border);
+            color: var(--text-primary);
+            padding: 0.85rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .feature-card {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 1rem;
+            padding: 2.5rem 2rem;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(5, 150, 105, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(5, 150, 105, 0.05);
+        }
+
+        .feature-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            background: rgba(5, 150, 105, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            border: 1px solid rgba(5, 150, 105, 0.15);
+        }
+
+        .feature-card.indigo .feature-icon {
+            color: var(--accent-indigo);
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.15);
+        }
+
+        .feature-card.sunset .feature-icon {
+            color: var(--accent-sunset);
+            background: rgba(249, 115, 22, 0.1);
+            border-color: rgba(249, 115, 22, 0.15);
+        }
+
+        .feature-card h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        /* Ecosystem Cross-Reference Banner */
+        .ecosystem-banner {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(99, 102, 241, 0.03) 100%);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            border-radius: 1.5rem;
+            padding: 3.5rem;
+            text-align: center;
+            margin-bottom: 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ecosystem-banner h3 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .ecosystem-banner blockquote {
+            font-size: 1.85rem;
+            font-weight: 700;
+            line-height: 1.3;
+            max-width: 850px;
+            margin: 0 auto 1.5rem;
+            letter-spacing: -0.02em;
+            color: white;
+        }
+
+        .ecosystem-banner p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-weight: 300;
+        }
+
+        /* Code Playground */
+        .playground-section {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            margin-bottom: 6rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .playground-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--surface-border);
+            padding-bottom: 1.5rem;
+        }
+
+        .playground-desc h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .playground-desc p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--surface-border);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.35rem;
+            font-family: var(--font-main);
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 2px 10px rgba(5, 150, 105, 0.25);
+        }
+
+        .demo-window {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            height: 480px;
+        }
+
+        @media (max-width: 900px) {
+            .demo-window {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .code-panel {
+            background: rgba(5, 7, 13, 0.9);
+            border: 1px solid var(--surface-border);
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid var(--surface-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-family: var(--font-main);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-title::before {
+            content: '';
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+
+        .panel-title.blue::before { background: var(--accent-indigo); }
+
+        .panel-copy {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition-smooth);
+        }
+
+        .panel-copy:hover {
+            color: var(--text-primary);
+        }
+
+        .panel-body {
+            flex-grow: 1;
+            padding: 1.25rem;
+            overflow: auto;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .panel-body pre {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            height: 100%;
+        }
+
+        .panel-body code {
+            font-family: var(--font-mono) !important;
+        }
+
+        /* Domain Map Section */
+        .domains-section {
+            margin-bottom: 6rem;
+        }
+
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .domain-card {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .domain-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .domain-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .domain-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--surface-border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .domain-card h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .domain-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        .domain-components {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Documentation & Quick Start */
+        .docs-section {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            margin-bottom: 6rem;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .quickstart-panel {
+            background: rgba(5, 7, 13, 0.9);
+            border: 1px solid var(--surface-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            overflow-x: auto;
+            position: relative;
+            margin-top: 1.5rem;
+        }
+
+        .quickstart-panel code {
+            color: #f3f4f6;
+        }
+
+        .quickstart-panel .comment {
+            color: var(--text-muted);
+        }
+
+        .quickstart-panel .command {
+            color: #34d399;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--surface-border);
+            padding: 4rem 0;
+            background: rgba(5, 7, 13, 0.8);
+            font-weight: 300;
+        }
+
+        .footer-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-logo-desc {
+            max-width: 400px;
+        }
+
+        .footer-logo-desc p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-column h5 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .footer-column a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-column a:hover {
+            color: var(--text-primary);
+        }
+
+        .copyright {
+            width: 100%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem;
+            padding-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .playground-section {
+                padding: 1.5rem;
+            }
+            .ecosystem-banner {
+                padding: 2rem;
+            }
+            .ecosystem-banner blockquote {
+                font-size: 1.35rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo-group" id="nav-logo">
+                <div class="logo-symbol">L</div>
+                <span>MXC Library</span>
+            </a>
+            <nav id="main-nav">
+                <a href="#features">Features</a>
+                <a href="#playground">Stacks</a>
+                <a href="#domains">Domains</a>
+                <a href="#docs">Quick Start</a>
+                <a href="https://github.com/epcim/mxc-library" class="btn-github">
+                    <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                    </svg>
+                    Source Code
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <span class="badge">Decoupled Portfolio</span>
+            <h1>Standard Workload <span>Composition Library</span></h1>
+            <p>The companion workload catalog for the MXC ecosystem. Fully decoupled, OCI-ready, and independently versioned schemas supplying production system planes and application templates.</p>
+            <div class="hero-buttons">
+                <a href="#playground" class="btn-primary" id="btn-hero-play">Explore Stacks</a>
+                <a href="https://epcim.github.io/mxc" class="btn-secondary" style="border-color: rgba(99, 102, 241, 0.2); background: rgba(99, 102, 241, 0.03);" id="btn-hero-engine">Core Compiler Docs</a>
+            </div>
+        </section>
+
+        <!-- Ecosystem Cross-Reference Banner -->
+        <section class="ecosystem-banner">
+            <h3>Eco-System Alignment</h3>
+            <blockquote>"Compile with the Engine. Deploy with the Catalog."</blockquote>
+            <p>While the core <strong>MXC Compiler Engine</strong> defines compile-time validation rules and projections, this workload library provides the actual, operational portfolio of Kubernetes system planes. Together, they provide dry-run safety and a DRY codebase.</p>
+            <a href="https://epcim.github.io/mxc" class="btn-primary" style="background: linear-gradient(135deg, #6366f1, #4f46e5); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);">Go to MXC Core Engine (Docs & Playground)</a>
+        </section>
+
+        <!-- Features Grid -->
+        <section id="features" style="padding-top: 4rem;">
+            <div class="section-title">
+                <h2>Library Capabilities</h2>
+                <p>Designed to structure robust enterprise portfolios, providing clean boundaries between developers and platform runtimes.</p>
+            </div>
+            
+            <div class="features-grid">
+                <!-- Card 1 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Delegated Projections</h3>
+                    <p>Per Rule 1, all active projection logic delegates to the core <code>mxc</code> engine. This guarantees zero duplicate codes, preventing compile drift.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="feature-card indigo">
+                    <div class="feature-icon">🏛️</div>
+                    <h3>Multi-Library Mixing</h3>
+                    <p>Built on CUE unification, you can easily combine, extend, and override standard stacks with your own custom, private organization stack portfolios.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="feature-card sunset">
+                    <div class="feature-icon">📦</div>
+                    <h3>OCI Portability</h3>
+                    <p>Our adapters use 100% flat static paths with no parent directory traversals, ensuring stacks package cleanly into OCI image registries.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="feature-card sunset">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Centralized Stack Defaults</h3>
+                    <p>Common configs, resource sizes, and annotations are centralized directly inside stack defaults, keeping cluster environment files brief and elegant.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Clean Modular Subdirs</h3>
+                    <p>Complex application stacks utilize optional subdirectories separating core schemas from auxiliary native CUE overlays (zero Jinja interpolation).</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="feature-card indigo">
+                    <div class="feature-icon">🔀</div>
+                    <h3>Git-Cross Workflows</h3>
+                    <p>Supports <code>git-cross</code>, enabling parallel multi-repo development so changes can be synchronized across cluster configs and this library from Day 1.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Playground -->
+        <section id="playground" class="playground-section">
+            <div class="playground-header">
+                <div class="playground-desc">
+                    <h3>Reusable Workload Stacks</h3>
+                    <p>Select a stack to witness how standard logical workloads define parameters and defaults decoupled from cluster targets.</p>
+                </div>
+                <div class="tab-group" id="scenario-tabs">
+                    <button class="tab-btn active" data-scenario="traefik" id="tab-traefik">Traefik Ingress</button>
+                    <button class="tab-btn" data-scenario="netbird" id="tab-netbird">NetBird VPN</button>
+                    <button class="tab-btn" data-scenario="harbor" id="tab-harbor">Harbor CI/CD</button>
+                </div>
+            </div>
+
+            <div class="demo-window">
+                <!-- Left: CUE Stack Spec -->
+                <div class="code-panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Logical Stack Specification (CUE)</span>
+                        <span class="panel-copy" id="copy-cue">Copy</span>
+                    </div>
+                    <div class="panel-body">
+                        <pre><code class="language-cue" id="cue-code-block">// Loading...</code></pre>
+                    </div>
+                </div>
+
+                <!-- Right: Expected Parameters Output -->
+                <div class="code-panel">
+                    <div class="panel-header">
+                        <span class="panel-title green">Expected Parameter Projection (YAML)</span>
+                        <span class="panel-copy" id="copy-yaml">Copy</span>
+                    </div>
+                    <div class="panel-body">
+                        <pre><code class="language-yaml" id="yaml-code-block"># Loading...</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Domain Map Section -->
+        <section id="domains" class="domains-section">
+            <div class="section-title">
+                <h2>Workload Domains & Folders</h2>
+                <p>An overview of the structured workload domains available inside the library stack.</p>
+            </div>
+
+            <div class="domains-grid">
+                <!-- Domain 1 -->
+                <div class="domain-card">
+                    <div class="domain-card-header">
+                        <span class="domain-badge">Core Bootstrap</span>
+                        <span style="font-size: 1.25rem;">⚙️</span>
+                    </div>
+                    <h4>Infrastructure</h4>
+                    <p>Ingress controllers, authentication engines, persistent storage, and basic system monitors.</p>
+                    <div class="domain-components">Traefik, Authelia, MetalLB, Prometheus/Grafana</div>
+                </div>
+
+                <!-- Domain 2 -->
+                <div class="domain-card">
+                    <div class="domain-card-header">
+                        <span class="domain-badge">Overlay Tunnels</span>
+                        <span style="font-size: 1.25rem;">🛜</span>
+                    </div>
+                    <h4>Networking</h4>
+                    <p>Secure peer-to-peer overlay networks and VPN clients connecting clusters across VPC subnets.</p>
+                    <div class="domain-components">NetBird client, Traefik middlewares</div>
+                </div>
+
+                <!-- Domain 3 -->
+                <div class="domain-card">
+                    <div class="domain-card-header">
+                        <span class="domain-badge">Pipelines</span>
+                        <span style="font-size: 1.25rem;">🛡️</span>
+                    </div>
+                    <h4>CI/CD</h4>
+                    <p>Secure registries, local runners, and automated dependency-updater configurations.</p>
+                    <div class="domain-components">Harbor, Woodpecker CI, Renovate Bot</div>
+                </div>
+
+                <!-- Domain 4 -->
+                <div class="domain-card">
+                    <div class="domain-card-header">
+                        <span class="domain-badge">Block-Storage</span>
+                        <span style="font-size: 1.25rem;">💾</span>
+                    </div>
+                    <h4>Storage</h4>
+                    <p>Highly available, distributed block-storage engines and dynamic volume provisioners.</p>
+                    <div class="domain-components">Longhorn persistent storage</div>
+                </div>
+
+                <!-- Domain 5 -->
+                <div class="domain-card">
+                    <div class="domain-card-header">
+                        <span class="domain-badge">Content Storage</span>
+                        <span style="font-size: 1.25rem;">🎬</span>
+                    </div>
+                    <h4>Media</h4>
+                    <p>Local object storage caches and storage-heavy media/streaming applications.</p>
+                    <div class="domain-components">Emby server, Silo storage</div>
+                </div>
+
+                <!-- Domain 6 -->
+                <div class="domain-card">
+                    <div class="domain-card-header">
+                        <span class="domain-badge">Sandboxed Games</span>
+                        <span style="font-size: 1.25rem;">🎮</span>
+                    </div>
+                    <h4>Game</h4>
+                    <p>Quick Retro Arcade gaming namespaces with strict egress-blocking NetworkPolicies.</p>
+                    <div class="domain-components">Pacman, Tetris, Game-2048</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quickstart Section -->
+        <section id="docs" class="docs-section">
+            <div class="section-title">
+                <h2>Quick Start & Development</h2>
+                <p>Run validation and parameters exports directly from the <code>mxc-library/</code> catalog scope.</p>
+            </div>
+
+            <div class="quickstart-panel">
+                <code><span class="comment"># 1. Validate all library schemas and workload values against constraints</span>
+<span class="command">just -f ../justfile -d .. mxc::validate</span>
+
+<span class="comment"># 2. Compile and output flat parameters (vars.yml) to stdout to inspect</span>
+<span class="command">just -f ../justfile -d .. mxc::export</span>
+
+<span class="comment"># 3. Export compiled values and save them directly for Kluctl deployment</span>
+<span class="command">just -f ../justfile -d .. mxc::export > ../cluster-home-mxc/vars.yml</span></code>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-wrapper">
+            <div class="footer-logo-desc">
+                <a href="#" class="logo-group">
+                    <div class="logo-symbol">L</div>
+                    <span>MXC Library</span>
+                </a>
+                <p>The standard workload composition catalog for the MXC declarative GitOps platform ecosystem. Multi-cluster ready.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h5>Resources</h5>
+                    <a href="../README.md">Main README</a>
+                    <a href="https://github.com/epcim/mxc-library">GitHub Code</a>
+                    <a href="https://epcim.github.io/mxc">MXC Compiler Engine</a>
+                </div>
+                <div class="footer-column">
+                    <h5>Catalog</h5>
+                    <a href="#features">Features</a>
+                    <a href="#playground">Stacks</a>
+                    <a href="#domains">Domains</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 Model-X Configuration (MXC) Project. Created with CUE and modern GitOps principles.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <!-- Simple CUE custom syntax highlighter injector -->
+    <script>
+        Prism.languages.cue = {
+            'comment': /\/\/.*|#.*/,
+            'string': {
+                pattern: /"(?:\\(?:\r\n|[\s\S])|[^"\\\r\n])*"|"""[\s\S]*?"""/,
+                greedy: true
+            },
+            'keyword': /\b(?:package|import|let|if|for|in|struct|list)\b/,
+            'boolean': /\b(?:true|false)\b/,
+            'number': /\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b/,
+            'operator': /[&|]/,
+            'punctuation': /[{}[\];(),.:]/
+        };
+    </script>
+    <script>
+        // Interactive Playground Scenarios Data
+        const scenarios = {
+            traefik: {
+                cue: `// stacks/infra/traefik.cue
+package infra
+
+import (
+    "github.com/epcim/mxc/schema"
+)
+
+#Traefik: S=schema.#AppCore & {
+    appName: "traefik"
+    image: {
+        repository: "docker.io/library/traefik"
+        tag:        "v3.1.2"
+    }
+    ports: {
+        web:       port: 8000
+        websecure: port: 443
+    }
+    expose: {
+        websecure: target: "loadbalancer"
+    }
+    
+    // Centralized Stack Default annotations
+    context: {
+        global_annotations: {
+            "prometheus.io/scrape": "true"
+        }
+    }
+}`,
+                yaml: `# Expected Projected Parameters for Traefik Ingress
+appName: traefik
+image:
+  repository: docker.io/library/traefik
+  tag: v3.1.2
+ports:
+  web:
+    port: 8000
+  websecure:
+    port: 443
+expose:
+  websecure:
+    target: loadbalancer
+context:
+  global_annotations:
+    prometheus.io/scrape: "true"`
+            },
+            netbird: {
+                cue: `// stacks/networking/netbird.cue
+package networking
+
+import (
+    "github.com/epcim/mxc/schema"
+)
+
+#NetBird: S=schema.#AppCore & {
+    appName: "netbird-client"
+    image: {
+        repository: "docker.io/netbirdio/netbird"
+        tag:        "latest"
+    }
+    
+    // Jinja Secret placeholder mapping (decoupled SOPS boundary)
+    secrets: {
+        setup_key: "{{ secrets.networking.netbird.setup_key }}"
+    }
+    
+    context: {
+        interface_name: "wt0"
+        routing:        true
+    }
+}`,
+                yaml: `# Expected Projected Parameters for NetBird Mesh
+appName: netbird-client
+image:
+  repository: docker.io/netbirdio/netbird
+  tag: latest
+secrets:
+  setup_key: '{{ secrets.networking.netbird.setup_key }}'
+context:
+  interface_name: wt0
+  routing: true`
+            },
+            harbor: {
+                cue: `// stacks/cicd/harbor.cue
+package cicd
+
+import (
+    "github.com/epcim/mxc/schema"
+)
+
+#Harbor: S=schema.#AppCore & {
+    appName: "harbor"
+    image: {
+        repository: "goharbor/harbor-core"
+        tag:        "v2.11.0"
+    }
+    ports: http: port: 80
+    expose: http: target: "ingress"
+    
+    context: {
+        admin_password: "{{ secrets.cicd.harbor.admin_password }}"
+        trivy: {
+            enabled: true
+            severity: "HIGH,CRITICAL"
+        }
+    }
+}`,
+                yaml: `# Expected Projected Parameters for Harbor Registry
+appName: harbor
+image:
+  repository: goharbor/harbor-core
+  tag: v2.11.0
+ports:
+  http:
+    port: 80
+expose:
+  http:
+    target: ingress
+context:
+  admin_password: '{{ secrets.cicd.harbor.admin_password }}'
+  trivy:
+    enabled: true
+    severity: HIGH,CRITICAL`
+            }
+        };
+
+        // DOM elements
+        const cueCodeBlock = document.getElementById('cue-code-block');
+        const yamlCodeBlock = document.getElementById('yaml-code-block');
+        const tabs = document.querySelectorAll('#scenario-tabs .tab-btn');
+        const copyCue = document.getElementById('copy-cue');
+        const copyYaml = document.getElementById('copy-yaml');
+
+        // Render scenario content
+        function selectScenario(scenarioKey) {
+            const data = scenarios[scenarioKey];
+            if (!data) return;
+
+            cueCodeBlock.textContent = data.cue.trim();
+            yamlCodeBlock.textContent = data.yaml.trim();
+
+            // Re-highlight
+            Prism.highlightElement(cueCodeBlock);
+            Prism.highlightElement(yamlCodeBlock);
+        }
+
+        // Tab click handling
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                selectScenario(tab.dataset.scenario);
+            });
+        });
+
+        // Copy buttons
+        copyCue.addEventListener('click', () => {
+            navigator.clipboard.writeText(cueCodeBlock.textContent);
+            copyCue.textContent = 'Copied!';
+            setTimeout(() => { copyCue.textContent = 'Copy'; }, 2000);
+        });
+
+        copyYaml.addEventListener('click', () => {
+            navigator.clipboard.writeText(yamlCodeBlock.textContent);
+            copyYaml.textContent = 'Copied!';
+            setTimeout(() => { copyYaml.textContent = 'Copy'; }, 2000);
+        });
+
+        // Initialize first scenario
+        selectScenario('traefik');
+    </script>
+</body>
+</html>

@@ -2,8 +2,13 @@
 
 This is the standard workload composition and rendering adapter library for the MXC Platform ecosystem. It is designed to be completely independent from the core compilation engine, allowing teams and communities to distribute, mix, and contribute customized workloads.
 
+[![Catalog & Stack Documentation](https://img.shields.io/badge/Catalog-Stack%20Documentation-059669?style=for-the-badge)](https://epcim.github.io/mxc-library)
+
+🚀 **Live Workload Catalog Documentation**: Explore our [GitHub Pages Catalog Site](https://epcim.github.io/mxc-library) to view our domain stacks, and interactive parameter blueprints.
+
 * **CUE Module Name:** `github.com/epcim/mxc-library`
 * **Local Workspace Directory:** `/mxc-library/`
+
 
 ---
 

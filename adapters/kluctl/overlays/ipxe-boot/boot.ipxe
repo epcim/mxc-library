@@ -1,0 +1,44 @@
+#!ipxe
+# Standard/Fallback iPXE boot menu for Model-X Configuration (MXC) Library
+
+set talos_version v1.9.0
+set local_ipxe_server ${cwduri}
+
+# Normalize architecture
+set os_arch ${arch}
+iseq ${os_arch} x86_64 && set os_arch amd64 ||
+iseq ${os_arch} i386 && set os_arch amd64 ||
+iseq ${os_arch} arm64 && set os_arch arm64 ||
+iseq ${os_arch} amd64 || iseq ${os_arch} arm64 || set os_arch amd64
+
+:menu
+menu Model-X Library iPXE Boot Menu [MAC: ${mac}]
+item --gap --             ------------------------- OS Installers -------------------------
+item talos-install        Install Talos Linux (${talos_version}) via Sidero Factory
+item netboot-xyz          Chainload netboot.xyz (Public Multi-OS Installer)
+item --gap --             ------------------------- Diagnostics -------------------------
+item local-shell          Open iPXE Command Line Shell
+item reboot               Reboot System
+choose target && goto ${target}
+
+:talos-install
+# Default to Sidero Image Factory
+set talos_mirror http://factory.talos.dev/image/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba/${talos_version}
+set talos_config_url ${local_ipxe_server}talos/controlplane.yaml
+set boot_params printk.devkmsg=on console=tty0 talos.platform=metal talos.config=${talos_config_url} initrd=initramfs-${os_arch}.xz
+
+echo Booting Talos Linux ${talos_version} from Sidero Factory...
+imgfree
+kernel ${talos_mirror}/kernel-${os_arch} ${boot_params}
+initrd ${talos_mirror}/initramfs-${os_arch}.xz
+boot
+
+:netboot-xyz
+chain --autofree http://boot.netboot.xyz || goto menu
+
+:local-shell
+shell
+goto menu
+
+:reboot
+reboot

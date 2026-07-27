@@ -1,0 +1,6 @@
+{% if get_var('overlays.netbird.routing_peer', none) %}
+{% set defaults = load_template('../../../../schema/netbird.io/nbroutingpeer.defaults.yml') | from_yaml %}
+{% set cr = merge_dict(defaults, overlays.netbird.routing_peer) %}
+---
+{{ cr | to_yaml }}
+{% endif %}

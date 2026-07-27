@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Auto-update Docker tags inside CUE configuration files",
+      "fileMatch": [
+        "\\.cue$"
+      ],
+      "matchStrings": [
+        "repository:\\s*\"(?<depName>[^\"]+)\"\\s*\\n\\s*tag:\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Auto-update Helm Chart versions inside Kluctl deployment.yml files",
+      "fileMatch": [
+        "(^|/)deployment\\.yml$"
+      ],
+      "matchStrings": [
+        "repo:\\s*(?<registryUrl>https?:\\/\\/[^\\n]+)\\s*\\n\\s*chartName:\\s*(?<depName>[a-zA-Z0-9-]+)\\s*\\n\\s*chartVersion:\\s*(?<currentValue>[^\\n]+)"
+      ],
+      "datasourceTemplate": "helm"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{% if metallb.context.l2advertisement is defined and metallb.context.l2advertisement is mapping %}
+{% for key, value in metallb.context.l2advertisement.items() %}
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: {{ key }}
+  namespace: metallb
+spec:
+  ipAddressPools: {{ value.ipAddressPools }}
+  {% if value.interfaces is defined %}
+  interfaces: {{ value.interfaces }}
+  {% endif %}
+---
+{% endfor %}
+{% elif metallb.context.l2advertisement is defined and metallb.context.l2advertisement %}
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2-ip
+  namespace: metallb
+spec:
+  ipAddressPools: {{ metallb.context.l2advertisement }}
+  {% if metallb.context.l2interfaces is defined %}
+  interfaces: {{ metallb.context.l2interfaces }}
+  {% endif %}
+{% endif %}
+
+{% for key, value in metallb.context.ipaddresspool.items() %}
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ key }}
+  namespace: metallb
+spec:
+  addresses: {{ value }}
+{% endfor %}

@@ -1,0 +1,20 @@
+{% if get_var('overlays.ingress_dashboard', false) %}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ overlays.ingress_dashboard.name | default("traefik-dashboard") }}
+  namespace: {{ overlays.ingress_dashboard.namespace | default("sys") }}
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: Host(`{{ overlays.ingress_dashboard.host }}`)
+    kind: Rule
+    middlewares:
+    - name: auth-forward
+      namespace: {{ overlays.ingress_dashboard.namespace | default("sys") }}
+    services:
+    - name: api@internal
+      kind: TraefikService
+  tls: {}
+{% endif %}

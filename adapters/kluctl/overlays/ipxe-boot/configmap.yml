@@ -1,0 +1,21 @@
+# /Users/p.michalec/Workspace/gitea/gitops-infra/mxc-library/adapters/kluctl/overlays/ipxe-boot/configmap.yml
+# Dynamically generates the ipxe-boot ConfigMap from physical files in infra/ipxe/
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ipxe-boot-config
+  namespace: {{ helmChart.namespace | default('zone-service') }}
+data:
+  Caddyfile: |
+    {{ load_template('../../../../../infra/ipxe/Caddyfile') | indent(4) }}
+  boot.ipxe: |
+    {{ load_template('../../../../../infra/ipxe/boot.ipxe') | indent(4) }}
+  sample-profile.ipxe: |
+    {{ load_template('../../../../../infra/ipxe/profiles/525400123456.ipxe') | indent(4) }}
+  default-profile.ipxe: |
+    {{ load_template('../../../../../infra/ipxe/profiles/default.ipxe') | indent(4) }}
+  controlplane.yaml: |
+    {{ load_template('../../../../../infra/talos/cluster-home/controlplane.yaml') | indent(4) }}
+  worker.yaml: |
+    {{ load_template('../../../../../infra/talos/cluster-home/worker.yaml') | indent(4) }}

@@ -1,0 +1,11 @@
+# vim: ft=yaml syntax=yaml sts=2 ts=2 sw=2
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+  namespace: {{ kustomize.namespace }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress

@@ -1,0 +1,17 @@
+{% if get_var('overlays.middleware_authelia', false) %}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: auth-authelia
+  namespace: {{ overlays.middleware_authelia.namespace | default("sys") }}
+spec:
+  forwardAuth:
+    address: http://authelia.{{ overlays.middleware_authelia.namespace | default("sys") }}.svc.cluster.local:9091/api/authz/forward-auth?rd=https://sso.{{ args.domain }}
+    trustForwardHeader: true
+    authResponseHeaders:
+      - Remote-User
+      - Remote-Groups
+      - Remote-Email
+      - Remote-Name
+{% endif %}

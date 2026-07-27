@@ -1,0 +1,6 @@
+deployments:
+- path: .
+  tags: [metallb]
+- barrier: true
+- path: ./config
+  tags: [metallb]

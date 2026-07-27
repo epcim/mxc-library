@@ -1,0 +1,148 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zone-service-default-deny
+  namespace: zone-service
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zone-service-allow-dns
+  namespace: zone-service
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zone-service-traefik-allow-ingress
+  namespace: zone-service
+spec:
+  podSelector:
+    matchLabels:
+      app: traefik
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8000
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 8082
+        - protocol: TCP
+          port: 8222
+        - protocol: TCP
+          port: 8443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zone-service-traefik-allow-backends
+  namespace: zone-service
+spec:
+  podSelector:
+    matchLabels:
+      app: traefik
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: home
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: media
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: productivity
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: game
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zone-service-traefik-allow-kube-api
+  namespace: zone-service
+spec:
+  podSelector:
+    matchLabels:
+      app: traefik
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.152.183.1/32
+      ports:
+        - protocol: TCP
+          port: 443
+    - to:
+        - ipBlock:
+            cidr: 172.31.1.15/32
+      ports:
+        - protocol: TCP
+          port: 16443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zone-service-traefik-allow-public-https
+  namespace: zone-service
+spec:
+  podSelector:
+    matchLabels:
+      app: traefik
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: zone-service-traefik-allow-public-dns
+  namespace: zone-service
+spec:
+  podSelector:
+    matchLabels:
+      app: traefik
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

@@ -1,0 +1,74 @@
+{%- if overlays.kluctl_deployment is defined %}
+{%- set kd = overlays.kluctl_deployment %}
+---
+apiVersion: gitops.kluctl.io/v1beta1
+kind: KluctlDeployment
+metadata:
+  name: "{{ kd.name }}"
+  namespace: {{ kd.namespace | default('kluctl-system') }}
+spec:
+  interval: {{ kd.interval | default('30m') }}
+  deployInterval: {{ kd.deployInterval | default('2h') }}
+  timeout: {{ kd.timeout | default('10m') }}
+  target: {{ kd.target | default(target.name) }}
+  args: {{ kd.args | default(args) | to_json }}
+
+  source:
+    git:
+      url: {{ kd.git_url | default('https://gitea.yourdomain.com/epcim/gitops-infra.git') }}
+      path: {{ kd.git_path | default('./') }}
+      {%- if kd.git_ref is defined %}
+      ref:
+        {{ kd.git_ref | to_yaml | indent(8) }}
+      {%- endif %}
+
+  dryRun: {{ kd.dryRun | default(true) | lower }}
+  manual: {{ kd.manual | default(false) | lower }}
+  prune: {{ kd.prune | default(false) | lower }}
+  delete: {{ kd.delete | default(false) | lower }}
+
+  forceApply: {{ kd.forceApply | default(true) | lower }}
+  replaceOnError: {{ kd.replaceOnError | default(true) | lower }}
+  {%- if kd.abortOnError is defined %}
+  abortOnError: {{ kd.abortOnError | lower }}
+  {%- endif %}
+
+  {%- if kd.includeTags is defined and kd.includeTags | length > 0 %}
+  includeTags:
+  {%- for tag in kd.includeTags %}
+  - {{ tag }}
+  {%- endfor %}
+  {%- endif %}
+
+  {%- if kd.excludeTags is defined and kd.excludeTags | length > 0 %}
+  excludeTags:
+  {%- for tag in kd.excludeTags %}
+  - {{ tag }}
+  {%- endfor %}
+  {%- endif %}
+
+  {%- if kd.includeDeploymentDirs is defined and kd.includeDeploymentDirs | length > 0 %}
+  includeDeploymentDirs:
+  {%- for dir in kd.includeDeploymentDirs %}
+  - {{ dir }}
+  {%- endfor %}
+  {%- endif %}
+
+  {%- if secrets.cicd is defined and secrets.cicd.repo is defined %}
+  credentials:
+    git:
+    {%- for repo in secrets.cicd.repo.keys() %}
+    {%- if secrets.cicd.repo[repo].password is defined %}
+    - host: gitea.yourdomain.com
+      path: epcim/{{ repo }}*
+      secretRef:
+        name: repo-{{ repo }}
+    {%- endif %}
+    {%- endfor %}
+  {%- endif %}
+
+  decryption:
+    provider: sops
+    secretRef:
+      name: {{ kd.sops_secret | default('sops-age-key') }}
+{%- endif %}

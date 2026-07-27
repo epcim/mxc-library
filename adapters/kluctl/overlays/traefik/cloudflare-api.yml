@@ -1,0 +1,10 @@
+{% if get_var('overlays.cloudflare_api', false) %}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api
+  namespace: {{ overlays.cloudflare_api.namespace | default("sys") }}
+stringData:
+  {{ args.domain }}: {{ secrets.traefik.resolver.cloudflare.tokens[args.domain] }}
+{% endif %}

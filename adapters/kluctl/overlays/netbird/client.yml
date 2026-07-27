@@ -1,0 +1,105 @@
+{% set client = get_var('overlays.netbird.client', none) %}
+{% if client %}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ client.namespace | default('netbird') }}
+  annotations:
+    netbird.yourdomain.com/isolation-mode: vlan20-networkpolicy
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netbird-client-default-deny
+  namespace: {{ client.namespace | default('netbird') }}
+spec:
+  podSelector:
+    matchLabels:
+{{ client.podLabels | default({'app': 'netbird-client'}) | to_yaml | indent(6, first=true) }}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netbird-client-allow-dns
+  namespace: {{ client.namespace | default('netbird') }}
+spec:
+  podSelector:
+    matchLabels:
+{{ client.podLabels | default({'app': 'netbird-client'}) | to_yaml | indent(6, first=true) }}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netbird-client-allow-routed-subnet
+  namespace: {{ client.namespace | default('netbird') }}
+spec:
+  podSelector:
+    matchLabels:
+{{ client.podLabels | default({'app': 'netbird-client'}) | to_yaml | indent(6, first=true) }}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ client.routedSubnet | default(route, true) }}
+{% if networkPolicy.allowPublicEgress | default(false) %}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netbird-client-allow-public-egress
+  namespace: {{ client.namespace | default('netbird') }}
+spec:
+  podSelector:
+    matchLabels:
+{{ client.podLabels | default({'app': 'netbird-client'}) | to_yaml | indent(6, first=true) }}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+{{ networkPolicy.privateExcept | default(['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']) | to_yaml | indent(14, first=true) }}
+{% endif %}
+{% for rule in client.externalEgress | default(networkPolicy.externalEgress, true) %}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netbird-client-allow-upstream-{{ loop.index }}
+  namespace: {{ client.namespace | default('netbird') }}
+spec:
+  podSelector:
+    matchLabels:
+{{ client.podLabels | default({'app': 'netbird-client'}) | to_yaml | indent(6, first=true) }}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ rule.cidr }}
+{% if rule.except is defined and rule.except %}
+            except:
+{{ rule.except | to_yaml | indent(14, first=true) }}
+{% endif %}
+      ports:
+{{ rule.ports | to_yaml | indent(8, first=true) }}
+{% endfor %}
+{% endif %}

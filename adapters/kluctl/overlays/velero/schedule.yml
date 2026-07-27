@@ -1,0 +1,60 @@
+{%- if overlays.velero is defined and overlays.velero.schedules is defined %}
+{%- for schedule in overlays.velero.schedules %}
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: {{ schedule.name }}
+  namespace: velero
+spec:
+  schedule: "{{ schedule.schedule | default('0 3 * * *') }}"
+  paused: {{ schedule.paused | default(false) | lower }}
+  useOwnerReferencesInBackup: {{ schedule.useOwnerReferencesInBackup | default(false) | lower }}
+  template:
+    ttl: "{{ schedule.ttl | default('168h') }}"
+    storageLocation: {{ schedule.storageLocation | default('synology') }}
+    {%- if schedule.snapshotVolumes is defined %}
+    snapshotVolumes: {{ schedule.snapshotVolumes | lower }}
+    {%- endif %}
+    {%- if schedule.defaultVolumesToFsBackup is defined %}
+    defaultVolumesToFsBackup: {{ schedule.defaultVolumesToFsBackup | lower }}
+    {%- endif %}
+    {%- if schedule.volumeSnapshotLocations is defined %}
+    volumeSnapshotLocations:
+    {%- for loc in schedule.volumeSnapshotLocations %}
+    - {{ loc }}
+    {%- endfor %}
+    {%- endif %}
+    {%- if schedule.includedNamespaces is defined %}
+    includedNamespaces:
+    {%- for ns in schedule.includedNamespaces %}
+    - {{ ns }}
+    {%- endfor %}
+    {%- endif %}
+    {%- if schedule.excludedNamespaces is defined %}
+    excludedNamespaces:
+    {%- for ns in schedule.excludedNamespaces %}
+    - {{ ns }}
+    {%- endfor %}
+    {%- endif %}
+    {%- if schedule.includedResources is defined %}
+    includedResources:
+    {%- for res in schedule.includedResources %}
+    - {{ res }}
+    {%- endfor %}
+    {%- endif %}
+    {%- if schedule.excludedResources is defined %}
+    excludedResources:
+    {%- for res in schedule.excludedResources %}
+    - {{ res }}
+    {%- endfor %}
+    {%- endif %}
+    {%- if schedule.labelSelector is defined %}
+    labelSelector:
+      matchLabels:
+        {%- for key, value in schedule.labelSelector.items() %}
+        {{ key }}: "{{ value }}"
+        {%- endfor %}
+    {%- endif %}
+{%- endfor %}
+{%- endif %}
