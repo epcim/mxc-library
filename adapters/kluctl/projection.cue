@@ -5,4 +5,4 @@ import (
 	base "github.com/epcim/mxc/adapters/kluctl:kluctl"
 )
 
-#FromCluster: base.#FromCluster
+#Projection: base.#Projection

@@ -1,5 +1,6 @@
 
-{%- set nm = global.ecr.split('/')[0] | default('') %}
+{%- set ecr = get_var('global.ecr', '') %}
+{%- set nm = ecr.split('/')[0] if ecr else '' %}
 {%- if nm %}
 {%- for ns in kube.namespaces %}
 ---
