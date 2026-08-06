@@ -132,7 +132,12 @@ flavors:
           memory: 64Mi
 
 overlays: {}
-secrets: {}
+secrets:
+  media:
+    silo:
+      secretKey: "please-change-this-silo-secret-key-32chars-minimum"
+  homarr:
+    encryption_key: "your-super-secret-key-min-32-chars!"
 context: {}
 kustomize:
   generatorOptions:
