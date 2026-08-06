@@ -1,0 +1,4 @@
+apiVersion: netbird.io/v1
+kind: NBPolicy
+metadata: {}
+spec: {}

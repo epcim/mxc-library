@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://netbird.io/v1/NBGroup",
+  "title": "NBGroup",
+  "type": "object",
+  "default": {
+    "apiVersion": "netbird.io/v1",
+    "kind": "NBGroup"
+  },
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "netbird.io/v1",
+      "default": "netbird.io/v1"
+    },
+    "kind": {
+      "type": "string",
+      "const": "NBGroup",
+      "default": "NBGroup"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "NBGroupSpec defines the desired state of NBGroup.",
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "type": "string",
+          "x-kubernetes-validations": [
+            {
+              "message": "Value is immutable",
+              "rule": "self == oldSelf"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    }
+  }
+}

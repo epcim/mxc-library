@@ -1,5 +1,5 @@
 {% for item in get_var('overlays.netbird.resources', []) %}
-{% set defaults = load_template('../../../../schema/netbird.io/nbresource.defaults.yml') | from_yaml %}
+{% set defaults = load_template('../../../../stacks/networking/netbird/schema/nbresource.defaults.yml') | from_yaml %}
 {% set cr = merge_dict(defaults, item) %}
 ---
 {{ cr | to_yaml }}

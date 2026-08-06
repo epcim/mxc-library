@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://netbird.io/v1/NBPolicy",
+  "title": "NBPolicy",
+  "type": "object",
+  "default": {
+    "apiVersion": "netbird.io/v1",
+    "kind": "NBPolicy"
+  },
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "netbird.io/v1",
+      "default": "netbird.io/v1"
+    },
+    "kind": {
+      "type": "string",
+      "const": "NBPolicy",
+      "default": "NBPolicy"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "NBPolicySpec defines the desired state of NBPolicy.",
+      "properties": {
+        "bidirectional": {
+          "default": true,
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "destinationGroups": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "name": {
+          "description": "Name Policy name",
+          "minLength": 1,
+          "type": "string"
+        },
+        "ports": {
+          "items": {
+            "format": "int32",
+            "maximum": 65535,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "protocols": {
+          "items": {
+            "enum": [
+              "tcp",
+              "udp"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "sourceGroups": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    }
+  }
+}

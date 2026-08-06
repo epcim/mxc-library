@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://netbird.io/v1/NBResource",
+  "title": "NBResource",
+  "type": "object",
+  "default": {
+    "apiVersion": "netbird.io/v1",
+    "kind": "NBResource"
+  },
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "netbird.io/v1",
+      "default": "netbird.io/v1"
+    },
+    "kind": {
+      "type": "string",
+      "const": "NBResource",
+      "default": "NBResource"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "NBResourceSpec defines the desired state of NBResource.",
+      "properties": {
+        "address": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "groups": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "networkID": {
+          "type": "string",
+          "x-kubernetes-validations": [
+            {
+              "message": "Value is immutable",
+              "rule": "self == oldSelf"
+            }
+          ]
+        },
+        "policyFriendlyName": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "policyName": {
+          "type": "string"
+        },
+        "policySourceGroups": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tcpPorts": {
+          "items": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": "array"
+        },
+        "udpPorts": {
+          "items": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "address",
+        "groups",
+        "name",
+        "networkID"
+      ],
+      "type": "object"
+    }
+  }
+}
