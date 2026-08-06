@@ -4,8 +4,8 @@ package media
 import "github.com/epcim/mxc/schema"
 
 #Silo: schema.#AppCore & {
-	appName:    "silo"
-	deployment: "kluctl"
+	appName:    string | *"silo"
+	deployment: string | *"kluctl"
 	contextSchema: "#app-template"
 	image: {
 		repository: "ghcr.io/silo-server/silo-server"
@@ -42,7 +42,14 @@ import "github.com/epcim/mxc/schema"
 		}
 	}
 	secrets: {
-		secretKey: string | *"{{ secrets.media.silo.secretKey }}"
+		secretKey: string | *"{{ secrets.silo.secretKey }}"
+		notifications: {
+			host: string | *"{{ secrets.silo.notifications.host }}"
+			port: string | *"{{ secrets.silo.notifications.port }}"
+			user: string | *"{{ secrets.silo.notifications.user }}"
+			pass: string | *"{{ secrets.silo.notifications.pass }}"
+			addr: string | *"{{ secrets.silo.notifications.addr }}"
+		}
 	}
 	tags: ["media", "silo"]
 	kustomize: {
@@ -72,11 +79,11 @@ import "github.com/epcim/mxc/schema"
 					}
 					env: {
 						TZ:                    "Europe/Prague"
-						SMTP_HOST:             "{{ secrets.infra.notifications.host }}"
-						SMTP_PORT:             "{{ secrets.infra.notifications.port }}"
-						SMTP_USER:             "{{ secrets.infra.notifications.user }}"
-						SMTP_PASS:             "{{ secrets.infra.notifications.pass }}"
-						SMTP_FROM:             "{{ secrets.infra.notifications.addr }}"
+						SMTP_HOST:             secrets.notifications.host
+						SMTP_PORT:             secrets.notifications.port
+						SMTP_USER:             secrets.notifications.user
+						SMTP_PASS:             secrets.notifications.pass
+						SMTP_FROM:             secrets.notifications.addr
 						MODE:                  "integrated"
 						SECRET_KEY:            secrets.secretKey
 						DATABASE_URL:          "postgres://silo:silo@localhost:5432/silo?sslmode=disable"
@@ -131,6 +138,7 @@ import "github.com/epcim/mxc/schema"
 							}
 						}
 					}
+					...
 				}
 				postgres: {
 					image: {
