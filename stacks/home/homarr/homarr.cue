@@ -9,7 +9,7 @@ import (
 #Homarr: schema.#AppCore & {
 	appName:    "homarr"
 	deployment: "kluctl"
-	contextSchema: "#app-template"
+	valuesSchema: "#app-template"
 	image: {
 		repository: "ghcr.io/ajnart/homarr"
 		tag:        "0.16.0"
@@ -23,8 +23,6 @@ import (
 		http: {
 			target: "ingress"
 			annotations: {
-				"traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
-				"traefik.ingress.kubernetes.io/router.tls":         "true"
 				"hajimari.io/enable":   "true"
 				"hajimari.io/icon":     "view-dashboard"
 				"hajimari.io/group":    "home"
@@ -36,7 +34,7 @@ import (
 	secrets: {
 		encryptionKey: string | *"{{ secrets.homarr.encryption_key }}"
 	}
-	context: {
+	values: {
 		controllers: {
 			main: {
 				serviceAccount: {

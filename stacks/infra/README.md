@@ -61,9 +61,9 @@ apps: {
 
 ---
 
-## 🌐 iPXE Boot Service (`#IPXEBoot`)
+## 🌐 iPXE Boot Service (`#IPXE`)
 
-The `#IPXEBoot` component deploys a high-performance **Caddy-backed** web server specifically optimized to orchestrate bare-metal network boots, automated Talos Linux installations, and interactive provisioning.
+The `#IPXE` component deploys a high-performance **Caddy-backed** web server specifically optimized to orchestrate bare-metal network boots, automated Talos Linux installations, and interactive provisioning.
 
 ### 🌟 Key Features
 * **MetalLB Direct LoadBalancer VIP Support:** Exposes Caddy natively on a dedicated external IP over standard Port 80, fully bypassing reverse proxies to ensure seamless compatibility with restricted physical motherboard NIC/PXE BIOS drivers.
@@ -77,14 +77,14 @@ The `#IPXEBoot` component deploys a high-performance **Caddy-backed** web server
 ```cue
 package apps
 
-import "github.com/epcim/mxc-library/stacks/infra"
+import "github.com/epcim/mxc-library/stacks/infra/ipxe"
 
 apps: {
-    "ipxe-boot": infra.#IPXEBoot & {
+    "ipxe-boot": ipxe.#IPXE & {
         kustomize: {
             resources: [
                 "helm-rendered.yaml",
-                "overlays/ipxe-boot/configmap.yml",  // Inject Caddyfile and boot.ipxe
+                "overlays/ipxe/configmap.yml",  // Inject Caddyfile and boot.ipxe
                 "overlays/pvc.yaml",                 // Enable persistent storage
             ]
         }
