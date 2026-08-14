@@ -31,6 +31,17 @@ mxc-library/
 Chart and CRD schemas registered in `module/schema/catalog.cue` can be refreshed with
 the library-owned `cue cmd vendor-schema` workflow in `utils/vendor_tool.cue`.
 
+The library pins `github.com/epcim/mxc@v0.1.0`. Publish core MXC first, then
+package and publish the library from this repository:
+
+```bash
+just oci-package v0.1.0
+just oci-publish v0.1.0
+```
+
+Both commands resolve modules through `registry.cue`; private GHCR packages
+require `GHCR_USER` and `GHCR_PAT` authentication.
+
 ---
 
 ## 2. Multi-Library Composition (Mixing & Extending Portfolios)
