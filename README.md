@@ -35,6 +35,9 @@ mxc-library/
         └── vars.yml           # Base bindings and default values
 ```
 
+Chart and CRD schemas registered in `schema/catalog.cue` can be refreshed with
+the library-owned `cue cmd vendor-schema` workflow in `utils/vendor_tool.cue`.
+
 ---
 
 ## 2. Multi-Library Composition (Mixing & Extending Portfolios)
