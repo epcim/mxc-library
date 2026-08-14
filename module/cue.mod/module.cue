@@ -1,6 +1,6 @@
-module: "github.com/epcim/mxc-library"
+module: "github.com/epcim/mxc-library@v0"
 language: {
-	version: "v0.9.0"
+	version: "v0.17.0"
 }
 source: {
 	kind: "git"
@@ -23,6 +23,6 @@ deps: {
 		default: true
 	}
 	"github.com/epcim/mxc@v0": {
-		v: "v0.1.0"
+		v: "v0.1.1"
 	}
 }
