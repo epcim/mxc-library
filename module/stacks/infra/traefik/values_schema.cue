@@ -617,7 +617,7 @@ package traefik
 		labels?: {
 			...
 		}
-		loadBalancerSourceRanges?: [...]
+		loadBalancerSourceRanges?: [...string]
 		single?: bool
 		spec?: {
 			...

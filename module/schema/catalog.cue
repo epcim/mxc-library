@@ -4,7 +4,7 @@ package schema
 import mxcschema "github.com/epcim/mxc/schema"
 
 // Catalog of external CRDs vendored for mxc-library's own stacks (as opposed to
-// mxc/schema/catalog.cue, which is reserved for schemas the kernel itself needs).
+// mxc/module/schema/catalog.cue, which is reserved for schemas the kernel itself needs).
 // Consumed by `just schema fetch-crd` (just/schema.just) via this repo's own root.
 //
 // Each entry's outputDir lands inside the owning stack's own subdirectory

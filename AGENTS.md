@@ -12,30 +12,13 @@ The repository is structured as follows:
 mxc-library/
 ├── AGENTS.md                   # This instruction file
 ├── README.md                   # General developer guide
-├── adapters/                   # Platform-specific adapters
-│   ├── app_template/
-│   │   └── projection.cue      # CUE logical pass-through pointing to mxc core
-│   ├── kluctl/
-│   │   ├── projection.cue      # CUE logical pass-through pointing to mxc core
-│   │   ├── helm-chart.yml      # Base templates (physical copy for OCI)
-│   │   ├── helm-values.yml
-│   │   ├── kustomization.yml
-│   │   ├── vars.yml
-│   │   └── overlays/           # Core and Library overlays
-│   │       ├── pvc.yaml        # Base overlays (physical copy for OCI)
-│   │       ├── authelia/       # App-specific custom overlays
-│   │       └── netbird/        # App-specific custom overlays
-│   └── kustomize-only/
-│       ├── kustomization.yml   # Base template (physical copy for OCI)
-│       └── vars.yml
-├── bases/                      # Core system bootstrapping (namespaces, kube-system, metallb)
-├── stacks/                     # Production-ready service stacks
-│   ├── cicd/                   # CI/CD planes (Woodpecker, Renovate, Harbor)
-│   ├── game/                   # Standalone workloads (2048, Pacman, Tetris)
-│   ├── infra/                  # Core infrastructure (Hass, Traefik, Monitoring)
-│   ├── media/                  # Media streaming (Emby, Silo)
-│   ├── networking/             # Advanced overlays (NetBird, Traefik routes)
-│   └── storage/                # Storage planes (Longhorn)
+├── module/                     # Publishable github.com/epcim/mxc-library module
+│   ├── cue.mod/
+│   ├── adapters/               # Platform-specific adapters
+│   ├── bases/                  # Core system bootstrapping
+│   ├── schema/
+│   └── stacks/                 # Production-ready service stacks
+├── utils/                      # Maintenance tools, excluded from OCI
 └── docs/                       # Per-application architecture & deployment guides
 ```
 

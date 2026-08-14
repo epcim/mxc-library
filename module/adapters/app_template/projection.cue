@@ -2,7 +2,7 @@
 package app_template
 
 import (
-	base "github.com/epcim/mxc/adapters/app_template:app_template"
+	base "github.com/epcim/mxc/adapters/helm/app-template:app_template"
 )
 
 #Projection: base.#Projection

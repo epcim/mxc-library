@@ -24,7 +24,7 @@ command: "vendor-schema": {
 		if source.type != _|_ && (source.type == "json-schema" || source.type == "helm-values-schema") {
 			let is_yaml = source.type == "helm-values-schema"
 			let file_name = path.Base(source.path)
-			let dest_dir = root + "/mxc-library/" + source.outputDir
+			let dest_dir = root + "/module/" + source.outputDir
 			let dest = "\(dest_dir)/\(file_name)"
 
 			let dir_parts = strings.Split(dest_dir, "/")

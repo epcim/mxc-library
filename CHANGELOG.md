@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+### Repository and OCI module layout
+
+- The publishable library module moved from the repository root to `module/`.
+- The module identity remains `github.com/epcim/mxc-library`; stack and adapter
+  import paths are unchanged.
+- Local development links to the core module must now target `mxc/module/`.
+
+The library OCI artifact is limited to deployable library content:
+
+```text
+module/cue.mod/module.cue
+module/schema/**
+module/bases/**
+module/stacks/**
+module/adapters/**
+```
+
+Repository documentation, CI configuration, Justfiles, environment files, and
+schema-maintenance tools remain outside `module/` and are not published.
+
 ### Compatibility with MXC alpha topology
 
 - Library stacks remain reusable `#AppCore` CUE definitions; no profile

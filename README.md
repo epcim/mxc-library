@@ -18,24 +18,17 @@ This library separates the logical application definition (the "content") from t
 
 ```
 mxc-library/
-├── cue.mod/                   # CUE Module metadata
-│   └── module.cue             # Declares module name: "github.com/epcim/mxc-library"
-├── stacks/                    # CUE workload declarations (The Content)
-│   ├── cicd/                  # Woodpecker, Renovate, Forgejo
-│   ├── game/                  # Game namespaces and isolated workloads
-│   ├── infra/                 # Core utilities (MetalLB, Traefik, Grafana, Loki)
-│   ├── media/                 # Storage-heavy media stacks (Emby, Silo)
-│   └── networking/            # NetBird client gateways, DNS stacks
-└── adapters/                  # Rendering Adapters (The Engine Bindings)
-    └── kluctl/                # Kluctl-specific render adapters
-        ├── helm-chart.yml     # Standard Helm chart fetch specification
-        ├── helm-values.yml    # Parameter-to-values binding
-        ├── kustomization.yml  # Kustomize list of resources
-        ├── overlays/          # PVCs, NetworkPolicies, custom ConfigMaps
-        └── vars.yml           # Base bindings and default values
+├── module/                    # Publishable github.com/epcim/mxc-library module
+│   ├── cue.mod/
+│   ├── schema/
+│   ├── bases/
+│   ├── stacks/                # Reusable workload definitions
+│   └── adapters/              # Library-specific deployer assets
+├── utils/                     # Schema maintenance tools, not published
+└── docs/                      # Documentation, not published
 ```
 
-Chart and CRD schemas registered in `schema/catalog.cue` can be refreshed with
+Chart and CRD schemas registered in `module/schema/catalog.cue` can be refreshed with
 the library-owned `cue cmd vendor-schema` workflow in `utils/vendor_tool.cue`.
 
 ---
@@ -86,7 +79,7 @@ Configure a local workspace cross-boundary mapping so that modifications inside 
 1. **Local Symbolic Link (Created by Default):**
    CUE package compilation uses a symlink inside the cluster configuration to resolve local edits instantly:
    ```
-   cluster-home-mxc/cue.mod/pkg/github.com/epcim/mxc-library ➡️ ../../../../../mxc-library
+   cluster-home-mxc/cue.mod/pkg/github.com/epcim/mxc-library ➡️ ../../../../../mxc-library/module
    ```
 2. **Track Cross-Commit Changes:**
    Use `git-cross` commands to synchronize branch staging and ensure cross-repo boundaries are kept in lock-step:
