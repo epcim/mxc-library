@@ -3,7 +3,7 @@ package velero
 
 import "github.com/epcim/mxc/schema"
 
-#Velero: S=schema.#AppCore & {
+#Velero: S=schema.#App & {
 	_flavor: {
 		nano: {
 			values: resources: {

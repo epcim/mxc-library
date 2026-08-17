@@ -3,7 +3,7 @@ package traefik
 
 import "github.com/epcim/mxc/schema"
 
-#TraefikSvc: S=schema.#AppCore & {
+#TraefikSvc: S=schema.#App & {
 	_flavor: {
 		nano: {
 			values: resources: {

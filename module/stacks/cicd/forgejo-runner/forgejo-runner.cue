@@ -2,7 +2,7 @@ package forgejo_runner
 
 import "github.com/epcim/mxc/schema"
 
-#ForgejoRunner: schema.#AppCore & {
+#ForgejoRunner: schema.#App & {
 	appName:    "forgejo-runner"
 	deployment: "kluctl"
 	image: {

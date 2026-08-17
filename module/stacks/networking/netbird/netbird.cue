@@ -3,7 +3,7 @@ package netbird
 
 import "github.com/epcim/mxc/schema"
 
-#NetBirdGateway: schema.#AppCore & {
+#NetBirdGateway: schema.#App & {
 	appName:     string
 	_hostname:   string | *appName
 	_namespace:  string | *"netbird"

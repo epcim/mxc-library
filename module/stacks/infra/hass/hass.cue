@@ -3,7 +3,7 @@ package hass
 
 import "github.com/epcim/mxc/schema"
 
-#HomeAssistant: S=schema.#AppCore & {
+#HomeAssistant: S=schema.#App & {
 	appName:    "hass"
 	deployment: "kluctl"
 	valuesSchema: "#app-template"

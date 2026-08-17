@@ -3,7 +3,7 @@ package harbor
 
 import "github.com/epcim/mxc/schema"
 
-#Harbor: S=schema.#AppCore & {
+#Harbor: S=schema.#App & {
 	_flavor: {
 		nano: {
 			values: {

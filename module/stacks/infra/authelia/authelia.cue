@@ -3,7 +3,7 @@ package authelia
 
 import "github.com/epcim/mxc/schema"
 
-#Authelia: S=schema.#AppCore & {
+#Authelia: S=schema.#App & {
 	appName:    "authelia"
 	deployment: "kluctl"
 	valuesSchema: "#app-template"

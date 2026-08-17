@@ -5,7 +5,7 @@ import (
 	"github.com/epcim/mxc/schema"
 )
 
-#Renovate: schema.#AppCore & {
+#Renovate: schema.#App & {
 	appName:    "renovate"
 	deployment: "kluctl"
 	valuesSchema: "#app-template"

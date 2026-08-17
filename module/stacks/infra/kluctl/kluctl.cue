@@ -3,7 +3,7 @@ package kluctl
 
 import "github.com/epcim/mxc/schema"
 
-#KluctlController: S=schema.#AppCore & {
+#KluctlController: S=schema.#App & {
 	appName:    "kluctl-controller"
 	deployment: "kluctl"
 	image: {

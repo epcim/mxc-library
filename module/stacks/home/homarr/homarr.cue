@@ -6,7 +6,7 @@ import (
 	"github.com/epcim/mxc/schema"
 )
 
-#Homarr: schema.#AppCore & {
+#Homarr: schema.#App & {
 	appName:    "homarr"
 	deployment: "kluctl"
 	valuesSchema: "#app-template"

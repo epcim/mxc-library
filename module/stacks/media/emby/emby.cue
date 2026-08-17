@@ -3,7 +3,7 @@ package emby
 
 import "github.com/epcim/mxc/schema"
 
-#Emby: S=schema.#AppCore & {
+#Emby: S=schema.#App & {
 	_flavor: {
 		small: {
 			values: controllers: main: containers: main: resources: {

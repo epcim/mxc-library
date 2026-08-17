@@ -3,7 +3,7 @@ package tetris
 
 import "github.com/epcim/mxc/schema"
 
-#Tetris: S=schema.#AppCore & {
+#Tetris: S=schema.#App & {
 	_flavor: {
 		small: {
 			values: resources: {

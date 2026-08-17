@@ -3,7 +3,7 @@ package game2048
 
 import "github.com/epcim/mxc/schema"
 
-#Game2048: S=schema.#AppCore & {
+#Game2048: S=schema.#App & {
 	_flavor: {
 		small: {
 			values: resources: {

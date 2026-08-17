@@ -3,7 +3,7 @@ package mimir
 
 import "github.com/epcim/mxc/schema"
 
-#Mimir: schema.#AppCore & {
+#Mimir: schema.#App & {
 	appName:    "mimir"
 	deployment: "kluctl"
 	helmChart: {

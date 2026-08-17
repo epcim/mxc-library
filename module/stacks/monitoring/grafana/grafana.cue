@@ -10,7 +10,7 @@ import (
 // Cross-app context reference example: the default datasources point at
 // #Mimir/#Loki's own kustomize.namespace instead of duplicating a hardcoded
 // hostname — if either app's namespace ever changes, this stays correct.
-#Grafana: S=schema.#AppCore & {
+#Grafana: S=schema.#App & {
 	_flavor: {
 		small: {
 			values: resources: {

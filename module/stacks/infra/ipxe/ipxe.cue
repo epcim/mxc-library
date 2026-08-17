@@ -3,7 +3,7 @@ package ipxe
 
 import "github.com/epcim/mxc/schema"
 
-#IPXE: S=schema.#AppCore & {
+#IPXE: S=schema.#App & {
 	appName:    "ipxe-boot"
 	deployment: "kluctl"
 	valuesSchema: "#app-template"

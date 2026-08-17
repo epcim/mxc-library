@@ -3,7 +3,7 @@ package silo
 
 import "github.com/epcim/mxc/schema"
 
-#Silo: schema.#AppCore & {
+#Silo: schema.#App & {
 	appName:    string | *"silo"
 	deployment: string | *"kluctl"
 	valuesSchema: "#app-template"

@@ -3,7 +3,7 @@ package metallb
 
 import "github.com/epcim/mxc/schema"
 
-#MetalLB: S=schema.#AppCore & {
+#MetalLB: S=schema.#App & {
 	_flavor: {
 		small: {}
 	}

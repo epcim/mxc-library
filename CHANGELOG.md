@@ -24,7 +24,7 @@ schema-maintenance tools remain outside `module/` and are not published.
 
 ### Compatibility with MXC alpha topology
 
-- Library stacks remain reusable `#AppCore` CUE definitions; no profile
+- Library stacks now use the canonical `#App` CUE definitions from `github.com/epcim/mxc/schema`; no profile
   registry or package-path profile naming is required.
 - One library application definition can be bound to multiple named deployment
   instances and clusters by the core `#TopologyAlpha` model.

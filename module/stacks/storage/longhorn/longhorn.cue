@@ -3,7 +3,7 @@ package longhorn
 
 import "github.com/epcim/mxc/schema"
 
-#Longhorn: S=schema.#AppCore & {
+#Longhorn: S=schema.#App & {
 	_flavor: {
 		small: {}
 	}

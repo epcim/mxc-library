@@ -3,7 +3,7 @@ package woodpecker
 
 import "github.com/epcim/mxc/schema"
 
-#Woodpecker: S=schema.#AppCore & {
+#Woodpecker: S=schema.#App & {
 	_flavor: {
 		nano: {
 			values: {

@@ -11,7 +11,7 @@ import (
 // Cross-app context reference example: instance names/labelSelectors derive
 // from #Loki/#Mimir/#Grafana's own appName instead of duplicating hardcoded
 // strings that could drift if those apps are ever renamed.
-#K8sMonitoring: schema.#AppCore & {
+#K8sMonitoring: schema.#App & {
 	appName:    "k8s-monitoring"
 	deployment: "kluctl"
 	helmChart: {

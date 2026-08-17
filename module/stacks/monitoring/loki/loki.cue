@@ -3,7 +3,7 @@ package loki
 
 import "github.com/epcim/mxc/schema"
 
-#Loki: schema.#AppCore & {
+#Loki: schema.#App & {
 	appName:    "loki"
 	deployment: "kluctl"
 	helmChart: {

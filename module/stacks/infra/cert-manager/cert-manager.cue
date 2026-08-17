@@ -3,7 +3,7 @@ package cert_manager
 
 import "github.com/epcim/mxc/schema"
 
-#CertManager: schema.#AppCore & {
+#CertManager: schema.#App & {
 	appName:    "cert-manager"
 	deployment: "kluctl"
 	helmChart: {

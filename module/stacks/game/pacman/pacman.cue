@@ -3,7 +3,7 @@ package pacman
 
 import "github.com/epcim/mxc/schema"
 
-#Pacman: S=schema.#AppCore & {
+#Pacman: S=schema.#App & {
 	_flavor: {
 		small: {
 			values: resources: {
