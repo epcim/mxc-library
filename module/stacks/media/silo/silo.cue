@@ -54,6 +54,7 @@ import "github.com/epcim/mxc/schema"
 		labels: [{
 			pairs: app: "silo"
 		}]
+		...
 	}
 	values: {
 		controllers: main: {

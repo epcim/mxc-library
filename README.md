@@ -1,50 +1,91 @@
 # Model-X Configuration (MXC) Library
 
-This is the standard workload composition and rendering adapter library for the MXC Platform ecosystem. It is designed to be completely independent from the core compilation engine, allowing teams and communities to distribute, mix, and contribute customized workloads.
+[**`epcim/mxc`**](https://github.com/epcim/mxc) is the core MXC compilation engine: it defines the base schemas, bootstrapping logic, and adapters that turn CUE workload definitions into rendered Kubernetes manifests. `mxc-library` (this repository) is the catalog that plugs into it — a standalone collection of ready-to-use workload stacks (applications) and deployer adapters, published as its own CUE module so teams and communities can distribute, mix, and contribute customized workloads without touching the engine itself.
+
+* **CUE Module Name:** `github.com/epcim/mxc-library`
+* **Core Engine Dependency:** [`github.com/epcim/mxc`](https://github.com/epcim/mxc) — [latest release](https://github.com/epcim/mxc/releases) (currently `v0.1.1`)
 
 [![Catalog & Stack Documentation](https://img.shields.io/badge/Catalog-Stack%20Documentation-059669?style=for-the-badge)](https://epcim.github.io/mxc-library)
 
 🚀 **Live Workload Catalog Documentation**: Explore our [GitHub Pages Catalog Site](https://epcim.github.io/mxc-library) to view our domain stacks, and interactive parameter blueprints.
 
-* **CUE Module Name:** `github.com/epcim/mxc-library`
-* **Local Workspace Directory:** `/mxc-library/`
+---
 
+## 1. Quick Start: Importing a Stack
+
+Each application stack in `module/stacks/` is a plain CUE package. Add the module as a dependency, then import the stack you need and set values on it:
+
+```cue
+package mxc
+
+import (
+    s_infra "github.com/epcim/mxc-library/stacks/infra/traefik"
+)
+
+cluster: apps: infra: traefik: s_infra.#Traefik & {
+    appFqdn: "traefik.example.com"
+}
+```
+
+That's it — no symlinks, no cross-repo tooling. The stack definition, its Kubernetes manifests, and its adapter wiring all come from the published module.
 
 ---
 
-## 1. Directory Structure
+## 2. The `#App` Schema: How a Stack Is Structured
 
-This library separates the logical application definition (the "content") from the physical render orchestrator (the "adapters"):
+Every stack builds on the core `#App` schema from `github.com/epcim/mxc/schema`. Values flow through it in layers, from identity down to the actual deployment artefact:
+
+1. **Identity** — mandatory, top-level identity fields for the application: `appName`, `appDesc`, `appFqdn`.
+2. **Shared configuration** — the per-app surfaces every stack fills in the same way: `context`, `values`, `secrets`, `platform`.
+3. **Container intent** — fields like `image` and `expose` describe the workload's runtime shape. See the [`mxc` engine repository](https://github.com/epcim/mxc) for details; stacks in this library rarely need to touch these directly.
+4. **Deployment artefacts** — the last tier, tracking the actual upstream rendering schema for the chosen adapter: `helmChart`, `k0rdent`, `kustomize`, and so on. At this tier, `values:` holds the native Helm values for the given chart (see `traefik.cue` in the example above for a full stack definition across all tiers).
+
+---
+
+## 3. Directory Structure
+
+The repository separates the publishable CUE module from local tooling and docs:
 
 ```
 mxc-library/
 ├── module/                    # Publishable github.com/epcim/mxc-library module
 │   ├── cue.mod/
-│   ├── schema/
+│   ├── schema/                # Vendored chart/CRD schemas
 │   ├── bases/
-│   ├── stacks/                # Reusable workload definitions
-│   └── adapters/              # Library-specific deployer assets
-├── utils/                     # Schema maintenance tools, not published
-└── docs/                      # Documentation, not published
+│   ├── stacks/                # Application stacks — the actual workload catalog
+│   │   ├── infra/
+│   │   ├── media/
+│   │   ├── monitoring/
+│   │   └── ...
+│   └── adapters/               # Library-specific deployer assets (Kluctl overlays, etc.)
+├── utils/                      # Schema maintenance tools, not published
+└── docs/                       # Documentation, not published
 ```
+
+`module/stacks/` is the catalog itself: one subdirectory per domain (`infra`, `media`, `monitoring`, ...), each holding the application stacks you import as shown above.
 
 Chart and CRD schemas registered in `module/schema/catalog.cue` can be refreshed with
 the library-owned `cue cmd vendor-schema` workflow in `utils/vendor_tool.cue`.
 
-The library pins `github.com/epcim/mxc@v0.1.0`. Publish core MXC first, then
-package and publish the library from this repository:
+---
+
+## 4. Publishing as an OCI Package
+
+The library pins a specific `github.com/epcim/mxc` version in `module/cue.mod/module.cue`. Publish core `mxc` first, then package and publish the library from this repository:
 
 ```bash
-just oci-package v0.1.0
-just oci-publish v0.1.0
+just oci-package v0.1.1
+just oci-publish v0.1.1
 ```
 
 Both commands resolve modules through `registry.cue`; private GHCR packages
 require `GHCR_USER` and `GHCR_PAT` authentication.
 
+Consuming repositories (e.g. `gitops-infra`) just pin the published version in their own module dependencies — no cross-repository tooling is required to keep them in sync.
+
 ---
 
-## 2. Multi-Library Composition (Mixing & Extending Portfolios)
+## 5. Multi-Library Composition (Mixing & Extending Portfolios)
 
 Because CUE values are merged via **unification (`&`)**, you can import and mix multiple independent CUE libraries seamlessly. If you create a customized stack library, you can import it beside this one:
 
@@ -68,41 +109,7 @@ cluster: apps: {
 
 ---
 
-## 3. Parallel Multi-Repo Development with `git-cross`
-
-To make it incredibly simple for users to participate, edit stacks/adapters, and share their contributions back from **Day 1**, we recommend using **`git-cross`** (https://github.com/epcim/git-cross).
-
-`git-cross` allows managing cross-repository development dependencies seamlessly, binding your active cluster infrastructure repo (`gitops-infra`) with this independent workload library repo (`mxc-library`).
-
-### Installation
-
-Install `git-cross` on your local system:
-```bash
-# Clone and install git-cross
-git clone https://github.com/epcim/git-cross.git ~/.git-cross
-# Or follow instructions at https://github.com/epcim/git-cross for shell aliases
-```
-
-### local Workflow Configuration
-
-Configure a local workspace cross-boundary mapping so that modifications inside the library can be tracked, committed, and contributed back alongside your deployment configurations:
-
-1. **Local Symbolic Link (Created by Default):**
-   CUE package compilation uses a symlink inside the cluster configuration to resolve local edits instantly:
-   ```
-   cluster-home-mxc/cue.mod/pkg/github.com/epcim/mxc-library ➡️ ../../../../../mxc-library/module
-   ```
-2. **Track Cross-Commit Changes:**
-   Use `git-cross` commands to synchronize branch staging and ensure cross-repo boundaries are kept in lock-step:
-   ```bash
-   # Status across both gitops-infra and mxc-library repositories
-   git cross status
-
-   # Commit changes across repositories simultaneously with a unified commit message
-   git cross commit -am "infra: update grafana community dashboard references and bump schema version"
-   ```
-
-### Sharing and Contributing Back
+## 6. Sharing and Contributing Back
 
 When you create new stacks or improve adapters locally:
 1. Stage your changes in `mxc-library`.

@@ -144,11 +144,8 @@ If a CRD or rendered object needs an embedded YAML or JSON string payload, defin
 
 Because `mxc-library` is decoupled from the main compilation kernel (`gitops-infra/mxc`), local testing requires invoking validation from the parent workspace.
 
-### Parallel Workspace Setup
-Our parallel workspace uses `git-cross` to bind the deployment configuration repository with this workload library. The cluster configuration contains a symbolic link to point to your local edit folder:
-```text
-cluster-home-mxc/cue.mod/pkg/github.com/epcim/mxc-library ➡️ ../../../../../mxc-library
-```
+### Workspace Setup
+The library is packaged and published as an OCI artifact (see the root [README](../README.md#4-publishing-as-an-oci-package)). Consuming repositories such as `gitops-infra` pin a published `mxc-library` version in their own module dependencies — no symlinks or cross-repository tooling are needed to keep them in sync.
 
 ### Key Development Commands
 You can run all validation and compilation commands directly from within the `mxc-library/` directory by calling `just` with parent scope parameters:

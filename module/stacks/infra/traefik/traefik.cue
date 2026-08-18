@@ -49,6 +49,7 @@ import "github.com/epcim/mxc/schema"
 			"helm-rendered.yaml",
 			"overlays/traefik/cloudflare-api.yml",
 		]
+		...
 	}
 	
 	flavor: string | *"small"

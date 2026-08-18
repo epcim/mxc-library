@@ -33,12 +33,6 @@ just -f ../justfile -d .. mxc::export
 
 # 3. Compile and save validated parameters directly for Kluctl deployment
 just -f ../justfile -d .. mxc::export > ../cluster-home-mxc/vars.yml
-
-# 4. Check git status across parallel repositories simultaneously (using git-cross)
-git cross status
-
-# 5. Commit changes across parallel repositories with a unified commit message
-git cross commit -am "infra: update ingress definitions and bump schema version"
 ```
 
 ---
@@ -170,8 +164,5 @@ Stack files inside the same `mxc-library/stacks/<category>` directory (e.g. `sta
     ```bash
     just -f ../justfile -d .. mxc::export
     ```
-3.  **Check Git Cross Status:** Run status to ensure both repositories (`gitops-infra` and `mxc-library`) are in sync:
-    ```bash
-    git cross status
-    ```
+3.  **Check Git Status:** Run `git status` in `mxc-library` to confirm your changes are staged as expected before committing.
 4.  **No Manual Overrides:** Never manually edit `cluster-home-mxc/vars.yml` or downstream configs. Always apply updates to the CUE sources in the library/environments and regenerate the variables using the export task runner.
