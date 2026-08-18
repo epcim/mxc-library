@@ -20,7 +20,7 @@ import "github.com/epcim/mxc/schema"
 	// Authelia-specific annotations/hosts the generic #Projection can't express
 	// under this key; target stays "none" so #Projection does not also emit a
 	// second, duplicate ingress.http. context.ingress.main's host/tls derive
-	// from S.expose.http.fqdn (set at the cluster override site) instead of a
+	// from S.appFqdn (set at the cluster override site) instead of a
 	// second hardcoded literal, so there's one source of truth for the hostname.
 	expose: {
 		http: {
@@ -90,8 +90,9 @@ import "github.com/epcim/mxc/schema"
 				"hajimari.io/appName":                              "Authelia"
 				"hajimari.io/instance":                             "main"
 			}
+			let effectiveFqdn = [if S.appFqdn != _|_ { S.appFqdn }, if S.expose.http.fqdn != _|_ { S.expose.http.fqdn }, "auth.example.com"][0]
 			hosts: [{
-				host: S.expose.http.fqdn
+				host: effectiveFqdn
 				paths: [{
 					path:     "/"
 					pathType: "Prefix"
@@ -103,7 +104,7 @@ import "github.com/epcim/mxc/schema"
 			}]
 			tls: [{
 				hosts: [
-					S.expose.http.fqdn,
+					effectiveFqdn,
 				]
 			}]
 		}

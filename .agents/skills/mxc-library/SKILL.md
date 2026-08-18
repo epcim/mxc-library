@@ -96,7 +96,7 @@ Do not pollute core schemas with target-specific properties. If you need to gene
 ### 3. Referential Integrity with Key-Mapping
 To avoid duplicate key specifications (like typing `portName: "http"` inside an exposure map), design schemas so that **exposure keys correspond directly to service ports**. Always use CUE pattern-constraints and let-expressions to fail compilation if an exposure references an undefined port:
 ```cue
-#AppCore: {
+#App: {
     ports: [string]: #PortSpec
     expose: [PortName=string]: {
         let portCheck = ports[PortName]
@@ -116,7 +116,7 @@ If a CRD or rendered object needs an embedded YAML or JSON string payload, defin
 ### 6. Leverage Sizing Presets (Flavors)
 Always define resource limits and requests inside a private `_flavor` map inside your stack schema, keyed by `flavor` string. This allows environment configurations to scale resources instantly (e.g. from `small` to `medium` or `large`) without repeating resource blocks:
 ```cue
-#MyWorkload: S=schema.#AppCore & {
+#MyWorkload: S=schema.#App & {
     _flavor: {
         small: {
             context: resources: {
@@ -146,10 +146,10 @@ When a single logical value (an FQDN, a URL built from it, a hostname list) is n
         externalURL: "https://\(expose.ingress.hosts.core)"  // harbor.cue
     }
     ```
-*   **Cross-level reference via the `S=` self-alias** — when the second usage sits deeper than the field it needs (e.g. a hand-rolled `context.ingress` needing the top-level `expose.http.fqdn`), reference the stack's own `S=schema.#AppCore & { ... }` alias instead of a second hardcoded literal:
+*   **Cross-level reference via the `S=` self-alias** — when the second usage sits deeper than the field it needs (e.g. a hand-rolled `context.ingress` needing the top-level `appFqdn`), reference the stack's own `S=schema.#App & { ... }` alias instead of a second hardcoded literal:
     ```cue
-    #Authelia: S=schema.#AppCore & {
-        context: ingress: main: hosts: [{host: S.expose.http.fqdn}]
+    #Authelia: S=schema.#App & {
+        context: ingress: main: hosts: [{host: S.appFqdn}]
     }
     ```
 

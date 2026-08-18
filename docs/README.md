@@ -77,7 +77,7 @@ Standard platform configurations, deployment tags, ports, sizing presets, resour
 *   This keeps cluster-level environment CUE files perfectly lean and minimal (e.g., `velero: stk_infra.#Velero` without redundant duplicate blocks).
 *   **Example Sizing Preset (Flavors):**
     ```cue
-    #MyWorkload: S=schema.#AppCore & {
+    #MyWorkload: S=schema.#App & {
         _flavor: {
             small: {
                 context: resources: {
@@ -117,7 +117,7 @@ We enforce a modern declarative paradigm for all library workloads:
 ### 2. Referential Integrity with Key-Mapping
 To avoid duplicate key specifications (like typing `portName: "http"` inside an exposure map), design schemas so that **exposure keys correspond directly to service ports**. Always use CUE pattern-constraints and let-expressions to fail compilation if an exposure references an undefined port:
 ```cue
-#AppCore: {
+#App: {
     ports: [string]: #PortSpec
     expose: [PortName=string]: {
         let portCheck = ports[PortName]

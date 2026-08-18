@@ -175,7 +175,6 @@ import "github.com/epcim/mxc/schema"
 				type:         "persistentVolumeClaim"
 				accessMode:   "ReadWriteOnce"
 				size:         "10Gi"
-				storageClass: "{{ kube.storage.default }}"
 				globalMounts: [
 					{path: "/tmp/silo-transcode"},
 				]
@@ -185,7 +184,6 @@ import "github.com/epcim/mxc/schema"
 				type:         "persistentVolumeClaim"
 				accessMode:   "ReadWriteOnce"
 				size:         "10Gi"
-				storageClass: "{{ kube.storage.default }}"
 				advancedMounts: main: postgres: [
 					{path: "/var/lib/postgresql"},
 				]
@@ -203,8 +201,8 @@ import "github.com/epcim/mxc/schema"
 			media: {
 				enabled: true
 				type:    "nfs"
-				server:  "{{ network.infra.synology.address }}"
-				path:    "{{ network.infra.synology.services.nfs.path }}/Media"
+				server:  string | *"nfs.local"
+				path:    string | *"/volume1/Media"
 				globalMounts: [
 					{path: "/mnt/media"},
 				]
