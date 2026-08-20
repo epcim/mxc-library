@@ -10,6 +10,27 @@
 [![Catalog & Stack Documentation](https://img.shields.io/badge/Catalog-Stack%20Documentation-059669?style=for-the-badge)](https://epcim.github.io/mxc-library)
 
 🚀 **Live Workload Catalog Documentation**: Explore our [GitHub Pages Catalog Site](https://epcim.github.io/mxc-library) to view our domain stacks, and interactive parameter blueprints.
+ 
+At its core, **MXC is just `cue export` of unified variable trees and configurations**. 
+
+Adapters simply transform this exported data into native input formats for whatever deployment or provisioning tool you choose: **Kluctl, Kustomize, K0rdent, Terraform / OpenTofu, Helm, or ArgoCD**.
+
+```text
+                      ┌────────────────────────────────────────┐
+                      │       just mxc::apply TARGET           │
+                      └──────────────────┬─────────────────────┘
+                                         │
+                         CUE evaluates adapter for tag
+                                         │
+             ┌───────────────────────────┼───────────────────────────┬───────────────────────────┐
+             ▼                           ▼                           ▼                           ▼
+     ┌───────────────┐           ┌───────────────┐           ┌───────────────┐           ┌───────────────┐
+     │    kluctl     │           │   kustomize   │           │    k0rdent    │           │   terraform   │
+     └───────┬───────┘           └───────┬───────┘           └───────┬───────┘           └───────┬───────┘
+             │                           │                           │                           │
+      kluctl deploy ...        kustomize build /           kcm apply /                 tofu / terraform
+                               kubectl apply -f            kubectl apply -f CR         apply ...
+```
 
 ---
 

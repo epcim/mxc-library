@@ -46,6 +46,11 @@ mxc-library/
 * To manage highly complex application stacks (e.g., Traefik, Authelia) requiring auxiliary custom manifests (like Secrets, IngressRoutes, or custom CRs), stacks may optionally be organized into subdirectories under `mxc-library/stacks/`.
 * **Optional / Escape-Hatch Only:** This is strictly optional. Do not use this subdirectory nesting for simple or standard workloads (like game pods, single containers, etc.). Simple workloads must continue to use flat, single `.cue` files in `mxc-library/stacks/` to avoid unnecessary nesting and code boilerplate.
 
+### Rule 6: Application Secrets Schema Contracts (No Hardcoded Jinja Placeholders)
+* Specify application secret parameters inside `secrets:` as typed CUE schema fields (e.g. `master_key?: string`, `secret_key?: string`).
+* Do **NOT** hardcode Jinja string templates as default field values (e.g. avoid `master_key: string | *"{{ secrets.ai.litellm.master_key }}"`).
+* Map values into container `env` or `values` conditionally (`if secrets.key != _|_ { ... }`). This allows clean type validation, avoids Kluctl Jinja rendering crashes when secrets are absent, and permits full struct assignment in cluster environments.
+
 ---
 
 ## 🛠️ Local Agent Skills
