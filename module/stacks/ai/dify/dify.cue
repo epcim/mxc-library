@@ -29,9 +29,10 @@ import (
 	helmChart: {
 		repo:         "https://langgenius.github.io/dify-helm"
 		chartName:    "dify"
-		chartVersion: "0.4.0"
+		chartVersion: "3.12.1"
 		releaseName:  "dify"
 		namespace:    kustomize.namespace
+		skipPrePull:  true
 	}
 
 	kustomize: {
@@ -50,8 +51,9 @@ import (
 
 	values: {
 		global: {
-			host:      [if S.appFqdn != _|_ {S.appFqdn}, "dify.apealive.net"][0]
-			enableTLS: false
+			host:             S.appFqdn
+			consoleWebDomain: S.appFqdn
+			enableTLS:        false
 		}
 		extraBackendEnvs: [
 			if secrets.secret_key != _|_ {
@@ -64,8 +66,8 @@ import (
 			},
 		]
 		ingress: {
-			enabled:          bool | *true
-			ingressClassName: string | *"traefik"
+			enabled:   bool | *true
+			className: string | *"traefik"
 			annotations: {
 				"hajimari.io/enable":   "true"
 				"hajimari.io/icon":     "sitemap"
@@ -75,17 +77,6 @@ import (
 				"traefik.ingress.kubernetes.io/router.middlewares": "sys-auth-authelia@kubernetescrd"
 				...
 			}
-			hosts: [
-				{
-					host: [if S.appFqdn != _|_ {S.appFqdn}, "dify.apealive.net"][0]
-					paths: [
-						{
-							path:     "/"
-							pathType: "Prefix"
-						},
-					]
-				},
-			]
 		}
 	}
 

@@ -29,9 +29,10 @@ import (
 	helmChart: {
 		repo:         "https://qdrant.github.io/qdrant-helm"
 		chartName:    "qdrant"
-		chartVersion: "0.14.0"
+		chartVersion: "1.19.0"
 		releaseName:  "qdrant"
 		namespace:    kustomize.namespace
+		skipPrePull:  true
 	}
 
 	kustomize: {
@@ -73,11 +74,12 @@ import (
 			}
 			hosts: [
 				{
-					host: [if S.appFqdn != _|_ {S.appFqdn}, "qdrant.apealive.net"][0]
+					host: S.appFqdn
 					paths: [
 						{
-							path:     "/"
-							pathType: "Prefix"
+							path:        "/"
+							pathType:    "Prefix"
+							servicePort: 6333
 						},
 					]
 				},

@@ -32,6 +32,7 @@ import (
 		chartVersion: "5.15.0"
 		releaseName:  "open-webui"
 		namespace:    kustomize.namespace
+		skipPrePull:  true
 	}
 
 	kustomize: {
@@ -85,8 +86,9 @@ import (
 			storageClass: "longhorn"
 		}
 		ingress: {
-			enabled:          bool | *true
-			ingressClassName: string | *"traefik"
+			enabled: bool | *true
+			class:   string | *"traefik"
+			host:    S.appFqdn
 			annotations: {
 				"hajimari.io/enable":   "true"
 				"hajimari.io/icon":     "chat-processing"
@@ -95,17 +97,6 @@ import (
 				"hajimari.io/instance": "svc"
 				...
 			}
-			hosts: [
-				{
-					host: [if S.appFqdn != _|_ {S.appFqdn}, "chat.apealive.net"][0]
-					paths: [
-						{
-							path:     "/"
-							pathType: "Prefix"
-						},
-					]
-				},
-			]
 		}
 	}
 

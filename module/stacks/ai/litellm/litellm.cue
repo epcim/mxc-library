@@ -27,11 +27,11 @@ import (
 	valuesSchema: string | *"https://raw.githubusercontent.com/BerriAI/litellm/main/values.schema.json"
 
 	helmChart: {
-		repo:         "https://berriai.github.io/litellm"
-		chartName:    "litellm"
-		chartVersion: "0.1.0"
+		repo:         "oci://ghcr.io/berriai/litellm-helm"
+		chartVersion: "1.97.0"
 		releaseName:  "litellm"
 		namespace:    kustomize.namespace
+		skipPrePull:  true
 	}
 
 	kustomize: {
@@ -128,8 +128,8 @@ import (
 			}
 		}
 		ingress: {
-			enabled:          bool | *true
-			ingressClassName: string | *"traefik"
+			enabled:   bool | *true
+			className: string | *"traefik"
 			annotations: {
 				"hajimari.io/enable":   "true"
 				"hajimari.io/icon":     "robot"
@@ -141,7 +141,7 @@ import (
 			}
 			hosts: [
 				{
-					host: [if S.appFqdn != _|_ {S.appFqdn}, "litellm.apealive.net"][0]
+					host: S.appFqdn
 					paths: [
 						{
 							path:     "/"
