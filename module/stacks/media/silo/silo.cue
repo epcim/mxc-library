@@ -3,7 +3,58 @@ package silo
 
 import "github.com/epcim/mxc/schema"
 
-#Silo: schema.#App & {
+#Silo: S=schema.#App & {
+	_flavor: {
+		small: {
+			values: controllers: main: {
+				containers: {
+					main: resources: {
+						requests: {cpu: "100m", memory: "256Mi"}
+						limits: {memory: "1Gi"}
+					}
+					postgres: resources: {
+						requests: {cpu: "50m", memory: "128Mi"}
+						limits: {memory: "512Mi"}
+					}
+					redis: resources: {
+						requests: {cpu: "10m", memory: "32Mi"}
+						limits: {memory: "128Mi"}
+					}
+				}
+			}
+			storage: {
+				"silo-data": size:      string | *"5Gi"
+				"redis-data": size:     string | *"1Gi"
+				"postgres-data": size:  string | *"10Gi"
+				"silo-transcode": size: string | *"10Gi"
+			}
+		}
+		medium: {
+			values: controllers: main: {
+				containers: {
+					main: resources: {
+						requests: {cpu: "250m", memory: "512Mi"}
+						limits: {memory: "2Gi"}
+					}
+					postgres: resources: {
+						requests: {cpu: "100m", memory: "256Mi"}
+						limits: {memory: "1Gi"}
+					}
+					redis: resources: {
+						requests: {cpu: "20m", memory: "64Mi"}
+						limits: {memory: "256Mi"}
+					}
+				}
+			}
+			storage: {
+				"silo-data": size:      string | *"20Gi"
+				"redis-data": size:     string | *"2Gi"
+				"postgres-data": size:  string | *"20Gi"
+				"silo-transcode": size: string | *"20Gi"
+			}
+		}
+	}
+
 	appName:    string | *"silo"
 	deployment: string | *"kluctl"
 	valuesSchema: "#app-template"
@@ -37,6 +88,14 @@ import "github.com/epcim/mxc/schema"
 			size:  string | *"1Gi"
 			class: string | *"longhorn"
 		}
+		"postgres-data": {
+			size:  string | *"10Gi"
+			class: string | *"longhorn"
+		}
+		"silo-transcode": {
+			size:  string | *"10Gi"
+			class: string | *"longhorn"
+		}
 	}
 	secrets: {
 		secretKey: string | *"{{ secrets.silo.secretKey }}"
@@ -49,6 +108,8 @@ import "github.com/epcim/mxc/schema"
 		}
 	}
 	tags: ["media", "silo"]
+	flavor: string | *"small"
+
 	kustomize: {
 		namespace: "media"
 		labels: [{
@@ -87,10 +148,6 @@ import "github.com/epcim/mxc/schema"
 						DATABASE_URL:          "postgres://silo:silo@localhost:5432/silo?sslmode=disable"
 						REDIS_URL:             "redis://localhost:6379"
 						SILO_PLUGIN_CACHE_DIR: "/var/lib/silo/plugins"
-					}
-					resources: {
-						requests: {cpu: "100m", memory: "256Mi"}
-						limits: {memory: "1Gi"}
 					}
 					probes: {
 						liveness: {
@@ -148,48 +205,36 @@ import "github.com/epcim/mxc/schema"
 						POSTGRES_PASSWORD: "silo"
 						POSTGRES_DB:       "silo"
 					}
-					resources: {
-						requests: {cpu: "50m", memory: "128Mi"}
-						limits: {memory: "512Mi"}
-					}
 				}
 				redis: {
 					image: {
 						repository: "redis"
 						tag:        "alpine"
 					}
-					resources: {
-						requests: {cpu: "10m", memory: "32Mi"}
-						limits: {memory: "128Mi"}
-					}
 				}
 			}
 		}
 		persistence: {
 			"silo-data": {
+				existingClaim: "\(appName)-silo-data"
 				globalMounts: [
 					{path: "/var/lib/silo"},
 				]
 			}
 			"silo-transcode": {
-				enabled:      true
-				type:         "persistentVolumeClaim"
-				accessMode:   "ReadWriteOnce"
-				size:         "10Gi"
+				existingClaim: "\(appName)-silo-transcode"
 				globalMounts: [
 					{path: "/tmp/silo-transcode"},
 				]
 			}
 			"postgres-data": {
-				enabled:      true
-				type:         "persistentVolumeClaim"
-				accessMode:   "ReadWriteOnce"
-				size:         "10Gi"
+				existingClaim: "\(appName)-postgres-data"
 				advancedMounts: main: postgres: [
 					{path: "/var/lib/postgresql"},
 				]
 			}
 			"redis-data": {
+				existingClaim: "\(appName)-redis-data"
 				advancedMounts: main: {
 					redis: [
 						{path: "/data"},
@@ -210,4 +255,7 @@ import "github.com/epcim/mxc/schema"
 			}
 		}
 	}
+
+	_flavor[S.flavor]
 }
+
