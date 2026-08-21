@@ -11,7 +11,11 @@ package schema
 import (
 	depsAlpha "github.com/epcim/mxc/schema/alpha"
 	depsExternal "github.com/epcim/mxc/schema/external"
+	depsMxc "github.com/epcim/mxc/schema/mxc"
+	depsPlatforms "github.com/epcim/mxc/schema/platforms"
 )
 
-_depsAlpha:    depsAlpha
-_depsExternal: depsExternal
+_depsAlpha:     depsAlpha
+_depsExternal:  depsExternal
+_depsMxc:       depsMxc
+_depsPlatforms: depsPlatforms

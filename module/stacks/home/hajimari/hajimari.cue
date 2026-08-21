@@ -78,4 +78,12 @@ import "github.com/epcim/mxc/schema"
 	}
 	tags: ["home", "portal", "hajimari"]
 	flavor: string | *"small"
+
+	_flavor: {
+		nano: {}
+		small: {}
+		medium: {}
+		large: {}
+	}
+	_flavor[S.flavor]
 }
